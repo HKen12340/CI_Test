@@ -75,5 +75,5 @@ jobs:
         working-directory: laravel-project
 
       # テスト実行
-      - run: php artisan test --parallel
+      - run: php artisan test
         working-directory: laravel-project
