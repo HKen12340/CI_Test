@@ -14,7 +14,7 @@ class ServiceTest extends TestCase
     {
         $service =  new PHPService();
 
-        $result = $service->IdCheck(1,1);
+        $result = $service->IdCheck(2,1);
 
         $this->assertTrue($result);
     }
