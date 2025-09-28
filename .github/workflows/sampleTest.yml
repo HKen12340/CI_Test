@@ -1,0 +1,74 @@
+name: Laravel CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: laravel
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: secret
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      # コード取得
+      - uses: actions/checkout@v4
+
+      # PHP セットアップ（バージョンは composer.json に合わせる）
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql
+          coverage: none
+
+      # Composer キャッシュ
+      - uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: composer-
+
+      # Composer インストール
+      - run: composer install --prefer-dist --no-progress --no-suggest
+
+      # .env 設定
+      - name: Create .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=laravel" >> .env
+          echo "DB_USERNAME=laravel" >> .env
+          echo "DB_PASSWORD=secret" >> .env
+
+      # キャッシュ（テスト用 SQLite を使いたい場合はコメントアウトして利用可）
+      # - name: Use SQLite for faster tests
+      #   run: |
+      #     echo "DB_CONNECTION=sqlite" >> .env
+      #     echo "DB_DATABASE=:memory:" >> .env
+
+      # マイグレーション
+      - run: php artisan migrate --force
+
+      # テスト実行
+      - run: php artisan test --parallel
