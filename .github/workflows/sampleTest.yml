@@ -38,6 +38,7 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, bcmath, pdo_mysql
           coverage: none
+          working-directory: laravel-project
 
       # Composer キャッシュ
       - uses: actions/cache@v3
@@ -47,8 +48,9 @@ jobs:
           restore-keys: composer-
 
       # Composer インストール
-      - run: composer install --prefer-dist --no-progress --no-suggest
-
+      - run: composer install --prefer-dist --no-progress
+        working-directory: laravel-project
+      
       # .env 設定
       - name: Create .env
         run: |
@@ -60,6 +62,7 @@ jobs:
           echo "DB_DATABASE=laravel" >> .env
           echo "DB_USERNAME=laravel" >> .env
           echo "DB_PASSWORD=secret" >> .env
+        working-directory: laravel-project
 
       # キャッシュ（テスト用 SQLite を使いたい場合はコメントアウトして利用可）
       # - name: Use SQLite for faster tests
@@ -69,6 +72,8 @@ jobs:
 
       # マイグレーション
       - run: php artisan migrate --force
+        working-directory: laravel-project
 
       # テスト実行
       - run: php artisan test --parallel
+        working-directory: laravel-project
