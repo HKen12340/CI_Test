@@ -57,6 +57,7 @@ jobs:
       # .env 設定
       - name: Create .env
         run: |
+          cd laravel-project
           cp .env.example .env
           php artisan key:generate
           echo "DB_CONNECTION=mysql" >> .env
