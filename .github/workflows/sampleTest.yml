@@ -1,4 +1,4 @@
-name: Laravel CI
+name: Laravel CI & Deploy
 
 on:
   push:
@@ -9,6 +9,9 @@ on:
       - main
 
 jobs:
+  # -------------------------------
+  # ① CIテストジョブ
+  # -------------------------------
   tests:
     runs-on: ubuntu-latest
 
@@ -32,13 +35,12 @@ jobs:
       # コード取得
       - uses: actions/checkout@v4
 
-      # PHP セットアップ（バージョンは composer.json に合わせる）
+      # PHP セットアップ
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
           extensions: mbstring, bcmath, pdo_mysql
           coverage: none
-          working-directory: laravel-project
 
       # Composer キャッシュ
       - uses: actions/cache@v3
@@ -49,8 +51,7 @@ jobs:
 
       # Composer インストール
       - run: composer install --prefer-dist --no-progress
-        working-directory: laravel-project
-      
+
       # .env 設定
       - name: Create .env
         run: |
@@ -62,18 +63,61 @@ jobs:
           echo "DB_DATABASE=laravel" >> .env
           echo "DB_USERNAME=laravel" >> .env
           echo "DB_PASSWORD=secret" >> .env
-        working-directory: laravel-project
-
-      # キャッシュ（テスト用 SQLite を使いたい場合はコメントアウトして利用可）
-      # - name: Use SQLite for faster tests
-      #   run: |
-      #     echo "DB_CONNECTION=sqlite" >> .env
-      #     echo "DB_DATABASE=:memory:" >> .env
 
       # マイグレーション
       - run: php artisan migrate --force
-        working-directory: laravel-project
 
       # テスト実行
       - run: php artisan test
-        working-directory: laravel-project
+
+  # -------------------------------
+  # ② デプロイジョブ（テスト成功後にのみ実行）
+  # -------------------------------
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # mainブランチのみデプロイ
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            APP_DIR=/var/www/laravel-app
+
+            echo "----🚀 デプロイ開始----"
+
+            if [ ! -d "$APP_DIR" ]; then
+              echo "初回デプロイ: リポジトリをクローン中..."
+              git clone -b main https://github.com/${{ github.repository }} $APP_DIR
+            else
+              echo "既存リポジトリを更新中..."
+              cd $APP_DIR
+              git fetch origin main
+              git reset --hard origin/main
+            fi
+
+            cd $APP_DIR
+
+            echo "Composer install..."
+            composer install --no-dev --optimize-autoloader
+
+            echo "マイグレーション実行..."
+            php artisan migrate --force
+
+            echo "キャッシュクリア..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            echo "コンテナを再起動..."
+            docker compose down
+            docker compose up -d --build
+
+            echo "✅ デプロイ完了!"
