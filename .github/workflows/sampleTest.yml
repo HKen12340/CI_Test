@@ -50,7 +50,9 @@ jobs:
           restore-keys: composer-
 
       # Composer インストール
-      - run: composer install --prefer-dist --no-progress
+      - run:
+          cd laravel-project
+          composer install --prefer-dist --no-progress
 
       # .env 設定
       - name: Create .env
