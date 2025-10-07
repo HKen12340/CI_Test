@@ -50,7 +50,7 @@ jobs:
           restore-keys: composer-
 
       # Composer インストール
-      - run:
+      - run: |
           cd laravel-project
           composer install --prefer-dist --no-progress
 
