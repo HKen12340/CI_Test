@@ -96,7 +96,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -e
-            APP_DIR=/laravel-app
+            APP_DIR=CI_Test
 
             echo "----🚀 デプロイ開始----"
 
