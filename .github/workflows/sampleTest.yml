@@ -78,7 +78,7 @@ jobs:
           php artisan test
 
   # -------------------------------
-  # ② デプロイジョブ（テスト成功後にのみ実行）
+  # ② デプロイ（テスト成功後にのみ実行）
   # -------------------------------
   deploy:
     needs: tests
@@ -99,7 +99,6 @@ jobs:
             APP_DIR=CI_Test
 
             echo "----🚀 デプロイ開始----"
-            ls
 
             if [ ! -d "$APP_DIR" ]; then
               echo "初回デプロイ: リポジトリをクローン中..."
@@ -113,7 +112,6 @@ jobs:
             fi
 
             #cd $APP_DIR
-            ls
 
             echo "Composer install..."
             cd laravel-project
