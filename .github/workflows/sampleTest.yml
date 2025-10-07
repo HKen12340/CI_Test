@@ -68,10 +68,14 @@ jobs:
           echo "DB_PASSWORD=secret" >> .env
 
       # マイグレーション
-      - run: php artisan migrate --force
+      - run: |
+          cd laravel-project
+          php artisan migrate --force
 
       # テスト実行
-      - run: php artisan test
+      - run: |
+          cd laravel-project
+          php artisan test
 
   # -------------------------------
   # ② デプロイジョブ（テスト成功後にのみ実行）
