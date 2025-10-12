@@ -61,11 +61,11 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=db" >> .env
+          echo "DB_HOST=127.0.0.1" >> .env
           echo "DB_PORT=3306" >> .env
-          echo "DB_DATABASE=LaravelTest" >> .env
+          echo "DB_DATABASE=laravel" >> .env
           echo "DB_USERNAME=root" >> .env
-          echo "DB_PASSWORD=root" >> .env
+          echo "DB_PASSWORD=secret" >> .env
 
       # マイグレーション
       - run: |
