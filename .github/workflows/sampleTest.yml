@@ -114,7 +114,6 @@ jobs:
             #cd $APP_DIR
 
             echo "Composer install..."
-            cd laravel-project
             composer install --no-dev --optimize-autoloader
 
             echo "マイグレーション実行..."
