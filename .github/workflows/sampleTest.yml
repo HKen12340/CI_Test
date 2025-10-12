@@ -111,8 +111,9 @@ jobs:
               git reset --hard origin/main
             fi
 
-            #cd $APP_DIR
+            cd $APP_DIR
 
+            cd laravel-project
             echo "Composer install..."
             composer install --no-dev --optimize-autoloader
 
