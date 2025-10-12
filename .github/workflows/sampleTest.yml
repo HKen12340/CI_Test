@@ -118,11 +118,11 @@ jobs:
             composer install --no-dev --optimize-autoloader
 
             echo "マイグレーション実行..."
-            cd laravel-project
+            ls -la
             php artisan migrate --force
 
+            echo "OK!!"
             echo "キャッシュクリア..."
-            cd laravel-project
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
