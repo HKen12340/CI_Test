@@ -98,7 +98,7 @@ jobs:
             set -e
             APP_DIR=CI_Test
 
-            echo "----🚀 デプロイ開始----"
+            echo "----🚀 デプロイ----"
 
             if [ ! -d "$APP_DIR" ]; then
               echo "初回デプロイ: リポジトリをクローン中..."
