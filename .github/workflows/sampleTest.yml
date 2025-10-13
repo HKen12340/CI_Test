@@ -103,14 +103,13 @@ jobs:
             if [ ! -d "$APP_DIR" ]; then
               echo "初回デプロイ: リポジトリをクローン中..."
               git clone -b main https://github.com/${{ github.repository }} $APP_DIR
+              cd $APP_DIR
             else
               echo "既存リポジトリを更新中..."
-              ls
+              cd $APP_DIR
               git fetch origin main
               git reset --hard origin/main
             fi
-
-            cd $APP_DIR
 
             cd laravel-project
             echo "Composer install..."
