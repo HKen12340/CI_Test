@@ -127,7 +127,6 @@ out: Could not open input file: artisan
             docker compose down
             docker compose up -d --build
 
-            cd laravel-project
             echo "マイグレーション実行 (Docker内)..."
             docker compose exec -T app php artisan migrate --force
 
