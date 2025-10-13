@@ -51,7 +51,13 @@ jobs:
 
       # Composer インストール
       - run: |
-          cd laravel-project
+err:  Container nginx  Starting
+err:  Container db  Started
+err:  Container nginx  Started
+out: マイグレーション実行 (Docker内)...
+out: Deprecated: PHP Startup: Use of mbstring.internal_encoding is deprecated in Unknown on line 0
+out: Could not open input file: artisan
+2025/10/13 03:48:40 Process exited with status 1          cd laravel-project
           composer install --prefer-dist --no-progress
 
       # .env 設定
@@ -121,6 +127,7 @@ jobs:
             docker compose down
             docker compose up -d --build
 
+            cd laravel-project
             echo "マイグレーション実行 (Docker内)..."
             docker compose exec -T app php artisan migrate --force
 
