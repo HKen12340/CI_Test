@@ -105,7 +105,6 @@ jobs:
               git clone -b main https://github.com/${{ github.repository }} $APP_DIR
             else
               echo "既存リポジトリを更新中..."
-              cd $APP_DIR
               ls
               git fetch origin main
               git reset --hard origin/main
