@@ -116,6 +116,7 @@ jobs:
             composer install --no-dev --optimize-autoloader
 
             echo "コンテナを起動..."
+            cd ..
             docker compose down
             docker compose up -d --build
 
