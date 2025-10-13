@@ -117,18 +117,11 @@ jobs:
             echo "Composer install..."
             composer install --no-dev --optimize-autoloader
 
-            echo "マイグレーション実行..."
-            ls -la
-            php artisan migrate --force
-
-            echo "OK!!"
-            echo "キャッシュクリア..."
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-
             echo "コンテナを再起動..."
             docker compose down
             docker compose up -d --build
+
+            echo "マイグレーション実行 (Docker内)..."
+            docker compose exec -T app php artisan migrate --force
 
             echo "✅ デプロイ完了!"
