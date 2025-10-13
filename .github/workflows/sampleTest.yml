@@ -117,9 +117,8 @@ jobs:
             echo "Composer install..."
             composer install --no-dev --optimize-autoloader
 
-            echo "コンテナを再起動..."
-            docker compose down
-            docker compose up -d --build
+            echo "コンテナを起動..."
+            docker-compose up -d --build
 
             echo "マイグレーション実行 (Docker内)..."
             docker compose exec -T app php artisan migrate --force
