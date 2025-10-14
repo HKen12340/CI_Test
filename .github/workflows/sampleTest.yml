@@ -19,13 +19,13 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: "%"
+          MYSQL_ROOT_PASSWORD: "root"
           MYSQL_DATABASE: database
           MYSQL_USER: db-user
           MYSQL_PASSWORD: db-pass
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
         options: >-
-          --health-cmd="mysqladmin ping -h localhost -uroot -proot"
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
