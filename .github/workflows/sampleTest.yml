@@ -60,7 +60,7 @@ jobs:
           cp .env.example .env
           php artisan key:generate
           echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=db" >> .env
+          echo "DB_HOST=mysql" >> .env
           echo "DB_PORT=3306" >> .env
           echo "DB_DATABASE=database" >> .env
           echo "DB_USERNAME=db-user" >> .env
