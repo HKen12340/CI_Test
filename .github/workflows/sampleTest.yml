@@ -66,9 +66,6 @@ jobs:
           echo "DB_USERNAME=db-user" >> .env
           echo "DB_PASSWORD=db-pass" >> .env
 
-      - name: Wait for MySQL
-          run: sleep 10
-
       # マイグレーション
       - run: |
           cd laravel-project
