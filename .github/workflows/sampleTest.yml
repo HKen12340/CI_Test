@@ -23,12 +23,14 @@ jobs:
           MYSQL_DATABASE: laravel
           MYSQL_USER: laravel
           MYSQL_PASSWORD: secret
+        ports:
+          - 3306:3306
+
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-
     steps:
       # コード取得
       - uses: actions/checkout@v4
@@ -51,7 +53,6 @@ jobs:
       - run: |
             cd laravel-project
             composer install --prefer-dist --no-progress
-
       # .env 設定
       - name: Create .env
         run: |
@@ -64,17 +65,14 @@ jobs:
           echo "DB_DATABASE=laravel" >> .env
           echo "DB_USERNAME=laravel" >> .env
           echo "DB_PASSWORD=secret" >> .env
-
       # マイグレーション
       - run: |
           cd laravel-project
           php artisan migrate --force
-
       # テスト実行
       - run: |
           cd laravel-project
           php artisan test
-
   # -------------------------------
   # ② デプロイジョブ（テスト成功後にのみ実行）
   # -------------------------------
@@ -95,9 +93,7 @@ jobs:
           script: |
             set -e
             APP_DIR=CI_Test
-
             echo "----🚀 デプロイ----"
-
             if [ ! -d "$APP_DIR" ]; then
               echo "初回デプロイ: リポジトリをクローン中..."
               git clone -b main https://github.com/${{ github.repository }} $APP_DIR
@@ -108,18 +104,14 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
             fi
-
             cd laravel-project
             echo "Composer install..."
             composer install --no-dev --optimize-autoloader
-
             echo "コンテナを起動..."
             cd ..
             ls -la
             docker compose down
             docker compose up -d --build
-
             echo "マイグレーション実行 (Docker内)..."
             docker compose exec -T app sh -c "cd laravel-project && php artisan migrate --force"
-
             echo "✅ デプロイ完了!"
