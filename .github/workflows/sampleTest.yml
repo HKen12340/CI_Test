@@ -20,9 +20,9 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: "root"
-          MYSQL_DATABASE: database
-          MYSQL_USER: db-user
-          MYSQL_PASSWORD: db-pass
+          MYSQL_DATABASE: laravel
+          MYSQL_USER: laravel
+          MYSQL_PASSWORD: secret
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
