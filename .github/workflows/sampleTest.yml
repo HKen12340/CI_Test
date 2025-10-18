@@ -20,7 +20,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: "root"
-          MYSQL_DATABASE: laravelTest
+          MYSQL_DATABASE: LaravelTest
           MYSQL_USER: laravel
           MYSQL_PASSWORD: secret
         ports:
@@ -53,6 +53,7 @@ jobs:
       - run: |
             cd laravel-project
             composer install --prefer-dist --no-progress
+
       # .env 設定
       - name: Create .env
         run: |
@@ -65,7 +66,12 @@ jobs:
           echo "DB_DATABASE=LaravelTest" >> .env
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env
-
+          for i in {1..15}; do
+            nc -z db 3306 && echo "✅ MySQL is ready" && break
+            echo "⏳ Waiting for MySQL..."
+            sleep 3
+          done
+          
       # マイグレーション
       - run: |
           cd laravel-project
