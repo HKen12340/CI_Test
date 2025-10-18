@@ -65,6 +65,14 @@ jobs:
           echo "DB_DATABASE=LaravelTest" >> .env
           echo "DB_USERNAME=root" >> .env
           echo "DB_PASSWORD=root" >> .env
+
+      - name: Wait for MySQL to be ready
+        run: |
+          for i in {1..15}; do
+            nc -z mysql 3306 && echo "MySQL is up!" && break
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
       # マイグレーション
       - run: |
           cd laravel-project
