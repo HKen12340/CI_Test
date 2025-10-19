@@ -122,8 +122,6 @@ jobs:
             
             echo "マイグレーション実行 (Docker内)..."
             run: |
-              cd laravel-project
-            　docker compose exec app php artisan key:generate
               for i in {1..30}; do
                 if docker compose exec -T db mysqladmin ping -h"db" -u"db-user" -p"db-pass" --silent; then
                   echo "✅ MySQL is ready"
