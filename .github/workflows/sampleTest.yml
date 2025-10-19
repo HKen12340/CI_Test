@@ -119,6 +119,22 @@ jobs:
             ls -la
             docker compose down
             docker compose up -d --build
+            
             echo "マイグレーション実行 (Docker内)..."
             docker compose exec -T app sh -c "cd laravel-project && php artisan migrate --force"
+
+
+            - name: Wait for MySQL to be ready
+            run: |
+              for i in {1..30}; do
+                if docker compose exec -T db mysqladmin ping -h"db" -u"db-user" -p"db-pass" --silent; then
+                  echo "✅ MySQL is ready"
+                  break
+                fi
+                echo "⏳ Waiting for MySQL..."
+                sleep 2
+              done
+  
+            run: |
+              docker compose exec -T app sh -c "cd laravel-project && php artisan migrate --force"
             echo "✅ デプロイ完了!"
