@@ -4,6 +4,8 @@ services:
     build: ./docker/php
     volumes:
       - .:/var/www
+    networks:
+      - app_net
 
   nginx:
     image: nginx
@@ -16,6 +18,8 @@ services:
     working_dir: /var/www
     depends_on:
       - app
+    networks:
+      - app_net
 
   mysql:
     image: mysql:5.7
@@ -34,6 +38,6 @@ services:
     networks:
       app_net:
         aliases:
-          - mysql  # ← これが重要！
+          - mysql 
 
 
